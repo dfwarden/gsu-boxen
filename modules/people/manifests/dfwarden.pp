@@ -51,4 +51,13 @@ class people::dfwarden {
     require 	=> File[$menumeters]
   }
 
+  # Git settings
+  include git
+  git::config::global { 'user.email':
+    value	=> 'dfwarden@gmail.com'
+  }
+  git::config::global { 'user.name':
+    value	=> 'David Warden'
+  }
+
 }
