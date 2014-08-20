@@ -59,3 +59,17 @@ github "xquartz",     "1.1.1"
 
 # Optional/custom modules. There are tons available at
 # https://github.com/boxen.
+github "dropbox",     "1.4.0"
+github "alfred",      "1.3.1"
+github "java",        "1.6.1"
+github "osx",         "2.7.1"
+github "karabiner",   "1.0.1"
+github "iterm2",      "1.1.2"
+github "dash",        "1.0.0"
+github "firefox",     "1.2.1"
+github "onepassword", "1.1.2"
+github "hipchat",     "1.1.3"
+github "seil",        "0.0.1"
+github "caffeine",    "1.0.0"
+
+dev    "menumeters"
