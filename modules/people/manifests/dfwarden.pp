@@ -16,7 +16,7 @@ class people::dfwarden {
   include caffeine
 
   # Local "dev" boxen puppet modules
-  include menumeters
+  #include menumeters
 
   $home		= "/Users/${::boxen_user}"
   $code		= "${home}/src"
@@ -46,10 +46,10 @@ class people::dfwarden {
     source 	=> 'dfwarden/oh-my-zsh',
     require 	=> File[$ohmyzsh]
   }
-  repository { $menumeters:
-    source 	=> 'Vodeclic/puppet-menumeters',
-    require 	=> File[$menumeters]
-  }
+  #repository { $menumeters:
+  #  source 	=> 'Vodeclic/puppet-menumeters',
+  #  require 	=> [ File[$menumeters], Class['menumeters'] ]
+  #}
 
   # Git settings
   include git
