@@ -7,13 +7,12 @@ class people::dfwarden {
   include iterm2::colors::solarized_light
   include iterm2::colors::solarized_dark
 
-  include karabiner
   include dash
   include firefox
   include hipchat
   include onepassword
-  include seil
   include caffeine
+  include adium
 
   # Local "dev" boxen puppet modules
   #include menumeters
@@ -59,5 +58,32 @@ class people::dfwarden {
   git::config::global { 'user.name':
     value	=> 'David Warden'
   }
+
+  # Vim settings
+  include vim
+  vim::bundle { [
+    'gmarik/vundle',
+    'tpope/vim-fugitive',
+    'Lokaltog/vim-easymotion',
+    'Lokaltog/vim-powerline',
+    'scrooloose/nerdtree',
+    'nvie/vim-flake8',
+    'altercation/vim-colors-solarized'
+  ]: }
+  file { "${vim::vimrc}":
+    target 	=> "${dotfiles}/.vimrc",
+    require	=> Repository[$dotfiles]
+  }
+
+  # Keyboard remapping stuff
+  include seil
+  include seil::login_item
+  seil::bind { 'keyboard bindings':
+    mappings => {
+      'capslock' => 53
+    }
+  }
+  include karabiner
+  include karabiner::login_item
 
 }
