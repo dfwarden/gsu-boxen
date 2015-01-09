@@ -53,27 +53,13 @@ Homebrew::Formula <| |> -> Package <| |>
 
 node default {
   # core modules, needed for most things
-  include dnsmasq
   include git
   include hub
-  #include nginx
 
   # fail if FDE is not enabled
   if $::root_encrypted == 'no' {
     fail('Please enable full disk encryption and try again')
   }
-
-  # node versions
-  #nodejs::version { 'v0.6': }
-  #nodejs::version { 'v0.8': }
-  #nodejs::version { 'v0.10': }
-
-  # default ruby versions
-  #ruby::version { '1.9.3': }
-  #ruby::version { '2.0.0': }
-  #ruby::version { '2.1.0': }
-  #ruby::version { '2.1.1': }
-  #ruby::version { '2.1.2': }
 
   # common, useful packages
   package {
