@@ -74,4 +74,5 @@ github "seil",        "1.0.2"
 github "caffeine",    "1.0.0"
 github "vim",         "1.0.5"
 github "adium",       "1.4.0"
+github "python",      "2.0.0"
 
