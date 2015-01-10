@@ -21,4 +21,4 @@ ruby::version::alias:
 
 # See https://github.com/boxen/puppet-java for docs
 # warden: 7u71 or greater is required for yosemite.
-java::update_version: 71
+java::update_version: '71'
