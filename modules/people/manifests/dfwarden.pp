@@ -13,9 +13,9 @@ class people::dfwarden {
   include onepassword
   include caffeine
   include adium
+  include menumeters
 
   # Local "dev" boxen puppet modules
-  include menumeters
 
   $home		= "/Users/${::boxen_user}"
   $code		= "${home}/src"
