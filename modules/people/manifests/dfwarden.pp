@@ -59,18 +59,8 @@ class people::dfwarden {
     value	=> 'David Warden'
   }
 
-  # Vim settings
-  include vim
-  vim::bundle { [
-    'gmarik/vundle',
-    'tpope/vim-fugitive',
-    'Lokaltog/vim-easymotion',
-    'Lokaltog/vim-powerline',
-    'scrooloose/nerdtree',
-    'nvie/vim-flake8',
-    'altercation/vim-colors-solarized'
-  ]: }
-  file { "${vim::vimrc}":
+  # Deploy .vimrc (possibly switch to dotfiles deploy)
+  file { "${home}/.vimrc":
     target 	=> "${dotfiles}/.vimrc",
     require	=> Repository[$dotfiles]
   }

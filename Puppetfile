@@ -72,7 +72,6 @@ github "onepassword", "1.1.5"
 github "hipchat",     "1.1.3"
 github "seil",        "1.0.2"
 github "caffeine",    "1.0.0"
-github "vim",         "1.0.5"
 github "adium",       "1.4.0"
-github "python",      "2.0.0"
+github "menumeters",  "0.0.1", :repo => "adamcrews/puppet-menumeters"
 
