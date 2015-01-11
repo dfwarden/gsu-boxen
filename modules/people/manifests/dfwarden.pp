@@ -15,14 +15,13 @@ class people::dfwarden {
   include adium
 
   # Local "dev" boxen puppet modules
-  #include menumeters
+  include menumeters
 
   $home		= "/Users/${::boxen_user}"
   $code		= "${home}/src"
   $boxendev	= "${code}/boxen"
   $dotfiles	= "${code}/dotfiles"
   $ohmyzsh	= "${code}/oh-my-zsh"
-  $menumeters	= "${boxendev}/puppet-menumeters"
   file { $dotfiles:
     ensure	=> directory
   }
@@ -31,10 +30,6 @@ class people::dfwarden {
   }
   file { $boxendev:
     ensure	=> directory
-  }
-  file { $menumeters:
-    ensure	=> directory,
-    require	=> File[$boxendev]
   }
 
   repository { $dotfiles:
@@ -45,10 +40,6 @@ class people::dfwarden {
     source 	=> 'dfwarden/oh-my-zsh',
     require 	=> File[$ohmyzsh]
   }
-  #repository { $menumeters:
-  #  source 	=> 'Vodeclic/puppet-menumeters',
-  #  require 	=> [ File[$menumeters], Class['menumeters'] ]
-  #}
 
   # Git settings
   include git
