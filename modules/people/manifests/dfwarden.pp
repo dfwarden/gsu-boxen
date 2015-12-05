@@ -1,6 +1,13 @@
 class people::dfwarden {
+
+  $brewcask_pkgs = ['alfred']
+  # Some of these need sudo cached to work.
+  # Just run sudo ls before scripts/boxen.
+  package { $brewcask_pkgs:
+    provider => 'brewcask'
+  }
+
   include dropbox
-  include alfred
   include java
   #include osx - need to do osx::something{'setting'}
   include iterm2::stable
