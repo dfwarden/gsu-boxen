@@ -10,7 +10,7 @@ class people::dfwarden {
   include dropbox
   include java
   #include osx - need to do osx::something{'setting'}
-  include iterm2::stable
+  include iterm2::dev
   include iterm2::colors::solarized_light
   include iterm2::colors::solarized_dark
 
