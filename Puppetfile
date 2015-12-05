@@ -61,7 +61,6 @@ github "xquartz",     "1.2.1"
 # Optional/custom modules. There are tons available at
 # https://github.com/boxen.
 github "dropbox",     "1.4.1"
-github "alfred",      "1.4.0"
 github "java",        "1.8.4"
 github "osx",         "2.8.0"
 github "karabiner",   "1.0.6"

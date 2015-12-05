@@ -4,11 +4,6 @@ GITHUBTARBALL
     adium (1.4.0)
 
 GITHUBTARBALL
-  remote: boxen/puppet-alfred
-  specs:
-    alfred (1.4.0)
-
-GITHUBTARBALL
   remote: boxen/puppet-boxen
   specs:
     boxen (3.11.1)
@@ -86,7 +81,7 @@ GITHUBTARBALL
 GITHUBTARBALL
   remote: boxen/puppet-java
   specs:
-    java (1.8.0)
+    java (1.8.4)
 
 GITHUBTARBALL
   remote: boxen/puppet-karabiner
@@ -175,7 +170,6 @@ GITHUBTARBALL
 
 DEPENDENCIES
   adium (= 1.4.0)
-  alfred (= 1.4.0)
   boxen (= 3.11.1)
   brewcask (= 0.0.6)
   caffeine (= 1.0.0)
@@ -192,7 +186,7 @@ DEPENDENCIES
   hub (= 1.4.1)
   inifile (= 1.4.1)
   iterm2 (= 1.2.2)
-  java (= 1.8.0)
+  java (= 1.8.4)
   karabiner (= 1.0.6)
   menumeters (= 0.0.2)
   module_data (= 0.0.4)
