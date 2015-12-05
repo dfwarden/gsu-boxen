@@ -23,7 +23,7 @@ end
 
 # Shortcut for a module under development
 def dev(name, *args)
-  mod "puppet-#{name}", :path => "#{ENV['HOME']}/src/boxen/puppet-#{name}"
+  mod "puppet-#{name}", :path => "#{ENV['HOME']}/src/boxen-modules-dev/puppet-#{name}"
 end
 
 # Includes many of our custom types and providers, as well as global
@@ -62,7 +62,7 @@ github "xquartz",     "1.2.1"
 # https://github.com/boxen.
 github "dropbox",     "1.4.1"
 github "alfred",      "1.4.0"
-github "java",        "1.8.0"
+github "java",        "1.8.4"
 github "osx",         "2.8.0"
 github "karabiner",   "1.0.6"
 github "iterm2",      "1.2.2"

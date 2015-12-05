@@ -19,16 +19,11 @@ class people::dfwarden {
 
   $home		= "/Users/${::boxen_user}"
   $code		= "${home}/src"
-  $boxendev	= "${code}/boxen"
+  $boxendev = "${code}/boxen-modules-dev"
   $dotfiles	= "${code}/dotfiles"
   $ohmyzsh	= "${code}/oh-my-zsh"
-  file { $dotfiles:
-    ensure	=> directory
-  }
-  file { $ohmyzsh:
-    ensure	=> directory
-  }
-  file { $boxendev:
+
+  file { [$dotfiles, $ohmyzsh, $boxendev]:
     ensure	=> directory
   }
 
