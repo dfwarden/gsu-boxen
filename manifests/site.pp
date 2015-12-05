@@ -51,7 +51,7 @@ Service {
 
 Homebrew::Formula <| |> -> Package <| |>
 
-node default {
+node upstream_default {
   # core modules, needed for most things
   include git
   include hub
@@ -85,4 +85,9 @@ node default {
     ensure => link,
     target => $boxen::config::repodir
   }
+}
+
+node default {
+  include git
+  include hum
 }
