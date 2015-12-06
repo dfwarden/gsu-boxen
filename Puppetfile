@@ -78,5 +78,3 @@ github "hipchat",     "1.1.3"
 github "seil",        "1.0.4"
 github "caffeine",    "1.0.0"
 github "adium",       "1.4.0"
-github "menumeters",  "0.0.2", :repo => "dfwarden/puppet-menumeters"
-

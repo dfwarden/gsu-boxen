@@ -78,7 +78,6 @@ class people::dfwarden {
   include onepassword
   include caffeine
   include adium
-  include menumeters
 
   file { [$dotfiles, $ohmyzsh, $boxendev, $powerline_fonts]:
     ensure	=> directory
@@ -93,6 +92,18 @@ class people::dfwarden {
     require	=> File[$ohmyzsh]
   }
 
+  # Menumeters for 10.11 El Capitan
+  file { 'menumeters config':
+    path   => "${home}/Library/Preferences/com.ragingmenace.MenuMeters.plist",
+    ensure => 'link',
+    target => "${dotfiles}/menumeters/com.ragingmenace.MenuMeters.plist",
+  }
+  exec { 'deploy menumeters prefpane':
+    command => "/usr/bin/unzip -o ${dotfiles}/menumeters/MenuMeters_1.9.1.zip -d ${home}/Library/PreferencePanes",
+    unless  => "plutil -convert json -o - ${home}/Library/PreferencePanes/MenuMeters.prefPane/Contents/Info.plist | grep -q '\"CFBundleVersion\":\"1.9.1\"'",
+    require => Repository[$dotfiles],
+  }
+
   # Powerline, including fonts
   repository { $powerline_fonts:
     source  => 'powerline/fonts',
@@ -103,7 +114,6 @@ class people::dfwarden {
     unless  => "find ${home}/Library/Fonts -type f -iname \\*powerline\\* | grep -qi powerline",
     require => Repository[$powerline_fonts],
   }
-
 
   # Set up Oh-My-Zsh and ZSH
   file { 'zshrc':
@@ -126,10 +136,21 @@ class people::dfwarden {
   }
 
   # Deploy .vimrc (possibly switch to dotfiles deploy)
-  file { "${home}/.vimrc":
-    target 	=> "${dotfiles}/.vimrc",
-    require	=> Repository[$dotfiles]
+  file { 'dotfile vimrc':
+    path    => "${home}/.vimrc",
+    ensure  => 'link',
+    target  => "${dotfiles}/vim/vimrc",
+    require => Repository[$dotfiles]
   }
+  $vimdirs = [ "${home}/.vim", "${home}/.vim/bundle"]
+  file { $vimdirs:
+    ensure => 'directory',
+    before => Repository["${home}/.vim/bundle/Vundle.vim"]
+  }
+  repository { "${home}/.vim/bundle/Vundle.vim":
+    source 	=> 'VundleVim/Vundle.vim',
+  }
+
 
   # Keyboard remapping stuff
   include seil

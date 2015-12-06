@@ -149,11 +149,6 @@ GITHUBTARBALL
     xquartz (1.2.1)
 
 GITHUBTARBALL
-  remote: dfwarden/puppet-menumeters
-  specs:
-    menumeters (0.0.2)
-
-GITHUBTARBALL
   remote: puppetlabs/puppetlabs-inifile
   specs:
     inifile (1.4.1)
@@ -188,7 +183,6 @@ DEPENDENCIES
   iterm2 (= 1.2.5)
   java (= 1.8.4)
   karabiner (= 1.0.6)
-  menumeters (= 0.0.2)
   module_data (= 0.0.4)
   nginx (= 1.6.0)
   nodejs (= 5.0.0)
