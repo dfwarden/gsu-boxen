@@ -1,7 +1,5 @@
 class people::dfwarden {
 
-  require helpers
-
   # Variables used in this manifest
   $home		= "/Users/${::boxen_user}"
   $code		= "${home}/src"
@@ -67,7 +65,7 @@ class people::dfwarden {
     target => "${dotfiles}/iterm2",
   }
 
-  $brewcask_pkgs = ['alfred']
+  $brewcask_pkgs = ['alfred', 'flux', 'google-chrome', 'yujitach-menumeters']
   # Some of these need sudo cached to work.
   # Just run sudo ls before scripts/boxen.
   package { $brewcask_pkgs:
@@ -104,16 +102,10 @@ class people::dfwarden {
     require	=> File[$ohmyzsh]
   }
 
-  # Menumeters for 10.11 El Capitan
   file { 'menumeters config':
     path   => "${home}/Library/Preferences/com.ragingmenace.MenuMeters.plist",
     ensure => 'link',
     target => "${dotfiles}/menumeters/com.ragingmenace.MenuMeters.plist",
-  }
-  exec { 'deploy menumeters prefpane':
-    command => "/usr/bin/unzip -o ${dotfiles}/menumeters/MenuMeters_1.9.1.zip -d ${home}/Library/PreferencePanes",
-    unless  => "plutil -convert json -o - ${home}/Library/PreferencePanes/MenuMeters.prefPane/Contents/Info.plist | grep -q '\"CFBundleVersion\":\"1.9.1\"'",
-    require => Repository[$dotfiles],
   }
 
   # Powerline, including fonts
