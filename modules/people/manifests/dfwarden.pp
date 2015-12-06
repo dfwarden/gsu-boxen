@@ -167,4 +167,17 @@ class people::dfwarden {
   include karabiner
   include karabiner::login_item
 
+  # Mac OS Python 2.7.x doesn't come with virtualenv
+  exec { 'install pip':
+    command => '/usr/bin/easy_install pip',
+    creates => '/usr/local/bin/pip',
+    user    => 'root',
+  }
+  $pip_packages = ['virtualenv']
+  package { $pip_packages:
+    ensure   => 'installed',
+    provider => 'pip',
+    require  => Exec['install pip'],
+  }
+
 }
