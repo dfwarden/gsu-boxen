@@ -1,5 +1,16 @@
 class people::dfwarden {
 
+  # OSX settings - https://github.com/boxen/puppet-osx
+  include osx::global::expand_print_dialog
+  include osx::global::expand_save_dialog
+  include osx::global::disable_remote_control_ir_receiver
+  include osx::global::disable_autocorrect
+
+  # Update the following when a new iTerm2 comes out.
+  include iterm2::stable
+  include iterm2::colors::solarized_light
+  include iterm2::colors::solarized_dark
+
   $brewcask_pkgs = ['alfred']
   # Some of these need sudo cached to work.
   # Just run sudo ls before scripts/boxen.
@@ -9,10 +20,6 @@ class people::dfwarden {
 
   include dropbox
   include java
-  #include osx - need to do osx::something{'setting'}
-  include iterm2::dev
-  include iterm2::colors::solarized_light
-  include iterm2::colors::solarized_dark
 
   include dash
   include firefox
