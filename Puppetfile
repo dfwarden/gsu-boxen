@@ -60,6 +60,12 @@ github "xquartz",     "1.2.1"
 
 # Optional/custom modules. There are tons available at
 # https://github.com/boxen.
+# github "elasticsearch", "2.8.0"
+# github "mysql",         "2.0.1"
+# github "postgresql",  "4.0.1"
+# github "redis",       "3.1.0"
+# github "sysctl",      "1.0.1"
+#
 github "dropbox",     "1.4.1"
 github "java",        "1.8.4"
 github "osx",         "2.8.0"
@@ -74,8 +80,3 @@ github "caffeine",    "1.0.0"
 github "adium",       "1.4.0"
 github "menumeters",  "0.0.2", :repo => "dfwarden/puppet-menumeters"
 
-# github "elasticsearch", "2.8.0"
-# github "mysql",         "2.0.1"
-# github "postgresql",  "4.0.1"
-# github "redis",       "3.1.0"
-# github "sysctl",      "1.0.1"
