@@ -60,9 +60,6 @@ Otherwise, follow instructions below.
 
 ### Run Boxen
 
-Putting this repo in /opt/boxen/repo is not explicitly necessary,
-but creating /opt/boxen writable by you is.
-
 ```
 sudo mkdir -p /opt/boxen
 sudo chown ${USER}:staff /opt/boxen
