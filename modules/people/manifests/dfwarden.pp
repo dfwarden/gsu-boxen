@@ -1,5 +1,7 @@
 class people::dfwarden {
 
+  require helpers
+
   # Variables used in this manifest
   $home		= "/Users/${::boxen_user}"
   $code		= "${home}/src"
@@ -25,11 +27,21 @@ class people::dfwarden {
   include osx::finder::show_all_filename_extensions
   include osx::finder::no_file_extension_warnings
 
-  include osx::safari::enable_developer_mode
   include osx::no_network_dsstores
 
   include osx::global::key_repeat_delay
   include osx::global::key_repeat_rate
+
+  include osx::safari::enable_developer_mode
+  # Safari settings that are not yet in osx::safari
+  $safari_keys = [ 'AlwaysShowTabBar', 'ShowOverlayStatusBar', 'NewTabBehavior', 'NewWindowBehavior', 'ShowFullURLInSmartSearchField' ]
+  # The following does not work yet
+  #osx_default_enable('com.apple.safari', $safari_keys)
+  boxen::osx_defaults { 'safari home page':
+    domain => 'com.apple.safari',
+    key    => 'HomePage',
+    value  => 'https://google.com',
+  }
   # end OSX settings
 
 
