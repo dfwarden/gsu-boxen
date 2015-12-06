@@ -88,8 +88,16 @@ node upstream_default {
 }
 
 node default {
-  $iterm2_version = '2_1_4'
-  $dropbox_version = '3.10.11'
+
+  # warn if FDE is not enabled
+  if $::root_encrypted == 'no' {
+    warning('Please consider enabling full disk encryption in System Preferences > Security & Privacy > Filevault. (Especially if you have an SSD!)')
+  }
+
+  $brewcask_pkgs = ['1password', 'hipchat', 'java']
+  package { $brewcask_pkgs:
+    provider => 'brewcask'
+  }
 
   include git
   include hub
