@@ -65,7 +65,7 @@ class people::dfwarden {
     target => "${dotfiles}/iterm2",
   }
 
-  $brewcask_pkgs = ['alfred', 'flux', 'google-chrome', 'yujitach-menumeters']
+  $brewcask_pkgs = ['alfred', 'flux', 'google-chrome', 'yujitach-menumeters', 'java']
   # Some of these need sudo cached to work.
   # Just run sudo ls before scripts/boxen.
   package { $brewcask_pkgs:
@@ -80,7 +80,6 @@ class people::dfwarden {
     version => $::dropbox_version,
   }
 
-  include java
 
   include dash
   include firefox
