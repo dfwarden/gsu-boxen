@@ -88,6 +88,9 @@ node upstream_default {
 }
 
 node default {
+  $iterm2_version = '2_1_4'
+  $dropbox_version = '3.10.11'
+
   include git
   include hub
 
