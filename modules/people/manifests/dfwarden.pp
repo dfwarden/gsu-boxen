@@ -1,11 +1,12 @@
 class people::dfwarden {
 
   # Variables used in this manifest
-  $home		= "/Users/${::boxen_user}"
-  $code		= "${home}/src"
-  $boxendev = "${code}/boxen-modules-dev"
-  $dotfiles	= "${code}/dotfiles"
-  $ohmyzsh	= "${code}/oh-my-zsh"
+  $home            = "/Users/${::boxen_user}"
+  $library         = "${home}/Library"
+  $code            = "${home}/src"
+  $boxendev        = "${code}/boxen-modules-dev"
+  $dotfiles        = "${code}/dotfiles"
+  $ohmyzsh         = "${code}/oh-my-zsh"
   $powerline_fonts = "${code}/powerline-fonts"
 
   # OSX settings - https://github.com/boxen/puppet-osx
@@ -28,7 +29,10 @@ class people::dfwarden {
   include osx::no_network_dsstores
 
   include osx::global::key_repeat_delay
-  include osx::global::key_repeat_rate
+  class { 'osx::global::key_repeat_rate':
+    rate => '2'
+  }
+
 
   include osx::safari::enable_developer_mode
   # Safari settings that are not yet in osx::safari
@@ -43,9 +47,11 @@ class people::dfwarden {
   # end OSX settings
 
 
-  # Update the following when a new iTerm2 comes out.
+  # iTerm 2
+  # Getting iTerm via brew cask is preferred, but I would have to implement
+  # getting solarized color scheme...
   class { 'iterm2::stable':
-    version => $::iterm2_version,
+    version => hiera('iterm2_version'),
   }
   include iterm2::colors::solarized_light
   include iterm2::colors::solarized_dark
@@ -65,7 +71,7 @@ class people::dfwarden {
     target => "${dotfiles}/iterm2",
   }
 
-  $brewcask_pkgs = ['alfred', 'flux', 'google-chrome', 'yujitach-menumeters', 'java']
+  $brewcask_pkgs = ['adium', 'alfred', 'caffeine', 'dash', 'dropbox', 'firefox', 'flux', 'google-chrome', 'karabiner', 'seil', 'yujitach-menumeters']
   # Some of these need sudo cached to work.
   # Just run sudo ls before scripts/boxen.
   package { $brewcask_pkgs:
@@ -80,31 +86,18 @@ class people::dfwarden {
     version => $::dropbox_version,
   }
 
-
-  include dash
-  include firefox
-  include hipchat
-  include onepassword
-  include caffeine
-  include adium
-
   file { [$dotfiles, $ohmyzsh, $boxendev, $powerline_fonts]:
-    ensure	=> directory
+    ensure    => directory
   }
 
   repository { $dotfiles:
-    source 	=> 'dfwarden/dotfiles',
-    require	=> File[$dotfiles]
-  }
-  repository { $ohmyzsh:
-    source 	=> 'dfwarden/oh-my-zsh',
-    require	=> File[$ohmyzsh]
+    source     => 'dfwarden/dotfiles',
+    require    => File[$dotfiles]
   }
 
-  file { 'menumeters config':
-    path   => "${home}/Library/Preferences/com.ragingmenace.MenuMeters.plist",
-    ensure => 'link',
-    target => "${dotfiles}/menumeters/com.ragingmenace.MenuMeters.plist",
+  repository { $ohmyzsh:
+    source     => 'dfwarden/oh-my-zsh',
+    require    => File[$ohmyzsh]
   }
 
   # Powerline, including fonts
@@ -114,9 +107,17 @@ class people::dfwarden {
   }
   exec { 'install Powerline fonts':
     command => "${powerline_fonts}/install.sh",
-    unless  => "find ${home}/Library/Fonts -type f -iname \\*powerline\\* | grep -qi powerline",
+    unless  => "find ${library}/Fonts -type f -iname \\*powerline\\* | grep -qi powerline",
     require => Repository[$powerline_fonts],
   }
+
+
+  file { 'menumeters config':
+    path   => "${library}/Preferences/com.ragingmenace.MenuMeters.plist",
+    ensure => 'link',
+    target => "${dotfiles}/menumeters/com.ragingmenace.MenuMeters.plist",
+  }
+
 
   # Set up Oh-My-Zsh and ZSH
   file { 'zshrc':
@@ -129,21 +130,18 @@ class people::dfwarden {
   }
 
 
-  # Git settings
-  include git
-  git::config::global { 'user.email':
-    value	=> 'dfwarden@gmail.com'
-  }
-  git::config::global { 'user.name':
-    value	=> 'David Warden'
-  }
-
-  # Deploy .vimrc (possibly switch to dotfiles deploy)
+  # Deploy .vimrc as file so we can refresh plugins
   file { 'dotfile vimrc':
     path    => "${home}/.vimrc",
-    ensure  => 'link',
-    target  => "${dotfiles}/vim/vimrc",
-    require => Repository[$dotfiles]
+    ensure  => 'file',
+    source  => "${dotfiles}/vim/vimrc",
+    require => Repository[$dotfiles],
+    notify  => Exec['install vim plugins'],
+  }
+  exec { 'install vim plugins':
+    command     => "/usr/bin/vim +PluginInstall +qall",
+    refreshonly => true,
+    require      => Repository["${home}/.vim/bundle/Vundle.vim"],
   }
   $vimdirs = [ "${home}/.vim", "${home}/.vim/bundle"]
   file { $vimdirs:
@@ -151,20 +149,9 @@ class people::dfwarden {
     before => Repository["${home}/.vim/bundle/Vundle.vim"]
   }
   repository { "${home}/.vim/bundle/Vundle.vim":
-    source 	=> 'VundleVim/Vundle.vim',
+    source     => 'VundleVim/Vundle.vim',
   }
 
-
-  # Keyboard remapping stuff
-  include seil
-  include seil::login_item
-  seil::bind { 'keyboard bindings':
-    mappings => {
-      'capslock' => 53
-    }
-  }
-  include karabiner
-  include karabiner::login_item
 
   # Mac OS Python 2.7.x doesn't come with virtualenv
   exec { 'install pip':
@@ -178,5 +165,16 @@ class people::dfwarden {
     provider => 'pip',
     require  => Exec['install pip'],
   }
+
+
+  # Git settings
+  include git
+  git::config::global { 'user.email':
+    value    => 'dfwarden@gmail.com'
+  }
+  git::config::global { 'user.name':
+    value    => 'David Warden'
+  }
+
 
 }
