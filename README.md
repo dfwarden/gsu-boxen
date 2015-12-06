@@ -1,18 +1,20 @@
-# Our Boxen
+# GSU Boxen
 
-This is a template Boxen project designed for your organization to fork and
-modify appropriately.
-The Boxen rubygem and the Boxen puppet modules are only a framework for getting
-things done.
-This repository template is just a basic example of _how_ to do things with them.
+This is a tool to help bootstrap your working environment on your Mac.
+
+It is not intended to replace Deployment/Munki but rather augment it with
+artifacts common to our organization. It also allows each user to define their own
+personal preferences.
+
+This expects you have a Github account. I'd like to figure out a way to use
+our AD accounts instead.
 
 ## Getting Started
 
 To give you a brief overview, we're going to:
 
-* Install dependencies (basically Xcode)
-* Bootstrap a boxen for your self/team/org/company
-* Then convert your local copy of that boxen to the post-bootstrapped version
+* Install dependencies (basically Xcode Command Line tools)
+* Run Boxen
 
 There are a few potential conflicts to keep in mind.
 Boxen does its best not to get in the way of a dirty system,
@@ -22,7 +24,7 @@ and detect most of these and tell you anyway):
 
 * Boxen __requires__ at least the Xcode Command Line Tools installed.
 * Boxen __will not__ work with an existing rvm install.
-* Boxen __may not__ play nice with a GitHub username that includes dash(-)
+* Boxen __may not__ play nice with a Github username that includes dash(-)
 * Boxen __may not__ play nice with an existing rbenv install.
 * Boxen __may not__ play nice with an existing chruby install.
 * Boxen __may not__ play nice with an existing homebrew install.
@@ -31,11 +33,16 @@ and detect most of these and tell you anyway):
 
 ### Dependencies
 
-**Install the Xcode Command Lines Tools and/or full Xcode.**
+**Install the Xcode Command Line Tools and/or full Xcode.**
 This will grant you the most predictable behavior in building apps like
 MacVim.
 
 How do you do it?
+
+#### OS X 10.10+ (Yosemite, El Capitan)
+
+1. Open terminal and run `git`
+2. Follow the prompts to install Command Line Tools
 
 #### OS X 10.9 (Mavericks)
 
@@ -51,63 +58,25 @@ Otherwise, follow instructions below.
 1. Go to the Downloads tab.
 1. Install the Command Line Tools.
 
-### Bootstrapping
-
-Create a **new** git repository somewhere on the internet.
-It can be private or public -- it really doesn't matter.
-If you're making a repository on GitHub, you _may not_ want to fork this repo
-to get started.
-The reason for that is that you can't really make private forks of public
-repositories easily.
-
-Once you've done that, you can run the following to bootstrap
-your boxen:
+### Run Boxen
 
 ```
 sudo mkdir -p /opt/boxen
 sudo chown ${USER}:staff /opt/boxen
-git clone https://github.com/boxen/our-boxen /opt/boxen/repo
+git clone <location of my this git repository> /opt/boxen/repo
 cd /opt/boxen/repo
-git remote rm origin
-git remote add origin <the location of my new git repository>
-git push -u origin master
+sudo echo 'sudo make me a sandwich!'; ./script/boxen
 ```
 
-Now that your boxen is bootstrapped, you can run the following to
-install the default configuration from this repo:
+Why run sudo just before? Some apps need elevated privs to be installed,
+and running sudo before boxen means there will be a cached sudo session
+boxen can use.
 
-```
-cd /opt/boxen/repo
-./script/boxen
-```
+Boxen nags you if you do not have FileVault enabled.
+If that bothers you, you can run boxen with `--no-fde`.
 
-### Distributing
+### Tell User Environment About Boxen
 
-That's enough to get your boxen into a usable state on other machines,
-usually.
-From there, we recommend setting up
-[boxen-web](https://github.com/boxen/boxen-web)
-as an easy way to automate letting other folks install your boxen.
-
-If you _don't_ want to use boxen-web, folks can get using your boxen like so:
-
-```
-sudo mkdir -p /opt/boxen
-sudo chown ${USER}:staff /opt/boxen
-git clone <location of my new git repository> /opt/boxen/repo
-cd /opt/boxen/repo
-./script/boxen
-```
-
-Keep in mind this requires you to encrypt your hard drive by default.
-If you do not want to do encrypt your hard drive, you can use the `--no-fde`.
-
-```
-./script/boxen --no-fde
-```
-
-It should run successfully, and should tell you to source a shell script
-in your environment.
 For users without a bash or zsh config or a `~/.profile` file,
 Boxen will create a shim for you that will work correctly.
 If you do have a `~/.bashrc` or `~/.zshrc`, your shell will not use
@@ -129,29 +98,38 @@ This template project provides the following by default:
 * Homebrew-Cask
 * Git
 * Hub
-* dnsmasq w/ .dev resolver for localhost
-* rbenv
-* Full Disk Encryption requirement
-* Node.js 0.8
-* Node.js 0.10
-* Node.js 0.12
-* Ruby 1.9.3
-* Ruby 2.0.0
-* Ruby 2.1.7
-* Ruby 2.2.3
-* ack
-* Findutils
-* GNU tar
+* 1Password
+* Hipchat
+* Java (currently 8.latest)
+
+Traditional Mac apps are installed to your user's Applications dir (`/Users/$username/Applications`).
 
 ## Customizing
 
-You can always check out the number of existing modules we already
-provide as optional installs under the
+Boxen uses Puppet internally, which can be confusing (especially to newcomers).
+If you are new, check out `./manifests/site.pp` and other users' .pp files
+in `./modules/people/manifests/` for examples of how to do things like install apps.
+
+Some good Puppet resources for beginners:
+  * [Puppet Basics](https://docs.puppetlabs.com/puppet/latest/reference/lang_summary.html)
+  * [Puppet Visual Index](https://docs.puppetlabs.com/puppet/latest/reference/lang_visual_index.html)
+  * [Puppet Standard Types](https://docs.puppetlabs.com/references/latest/type.html)
+
+### User-specific Configs
+
+Boxen looks in `./modules/people/manifests/` for a file called `$username.pp` where $username is
+your username in Mac OS. If found, Boxen will execute that Puppet manifest. This is where your
+user-specific configuration should go.
+
+### Including boxen modules from github (boxen/puppet-<name>)
+
+Using Boxen Puppet modules to install software is deprecated in favor of
+homebrew's "cask" system. Please see `./manifests/site.pp` for examples.
+
+You can always check out the number of existing modules from the
 [boxen organization](https://github.com/boxen). These modules are all
 tested to be compatible with Boxen. Use the `Puppetfile` to pull them
 in dependencies automatically whenever `boxen` is run.
-
-### Including boxen modules from github (boxen/puppet-<name>)
 
 You must add the github information for your added Puppet module into your Puppetfile at the root of your
 boxen repo (ex. /path/to/your-boxen/Puppetfile):
@@ -192,7 +170,7 @@ Now Puppet knows where to download the module from when you include it in your s
 
     # include the java module referenced in my Puppetfile with the line
     # github "java",     "1.6.0"
-    include java
+
 
 ### Hiera
 

@@ -23,7 +23,7 @@ end
 
 # Shortcut for a module under development
 def dev(name, *args)
-  mod "puppet-#{name}", :path => "#{ENV['HOME']}/src/boxen/puppet-#{name}"
+  mod "puppet-#{name}", :path => "#{ENV['HOME']}/src/boxen-modules-dev/puppet-#{name}"
 end
 
 # Includes many of our custom types and providers, as well as global
@@ -60,23 +60,11 @@ github "xquartz",     "1.2.1"
 
 # Optional/custom modules. There are tons available at
 # https://github.com/boxen.
-github "dropbox",     "1.4.1"
-github "alfred",      "1.4.0"
-github "java",        "1.8.0"
-github "osx",         "2.8.0"
-github "karabiner",   "1.0.6"
-github "iterm2",      "1.2.2"
-github "dash",        "1.0.0"
-github "firefox",     "1.2.3"
-github "onepassword", "1.1.5"
-github "hipchat",     "1.1.3"
-github "seil",        "1.0.2"
-github "caffeine",    "1.0.0"
-github "adium",       "1.4.0"
-github "menumeters",  "0.0.2", :repo => "dfwarden/puppet-menumeters"
-
 # github "elasticsearch", "2.8.0"
 # github "mysql",         "2.0.1"
 # github "postgresql",  "4.0.1"
 # github "redis",       "3.1.0"
 # github "sysctl",      "1.0.1"
+#
+github "osx",         "2.8.0"
+github "iterm2",      "1.2.5"

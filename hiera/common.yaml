@@ -19,6 +19,4 @@ ruby::rbenv_plugins:
 ruby::version::alias:
   2.0.0: 2.0.0-p353
 
-# See https://github.com/boxen/puppet-java for docs
-# warden: 7u71 or greater is required for yosemite.
-java::update_version: '71'
+iterm2_version: '2_1_4'
