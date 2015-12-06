@@ -105,7 +105,7 @@ This template project provides the following by default:
 * Hipchat
 * Java (currently 8.latest)
 
-Traditional Mac apps are install to your user's Applications dir (/Users/$username/Applications).
+Traditional Mac apps are installed to your user's Applications dir (`/Users/$username/Applications`).
 
 ## Customizing
 
