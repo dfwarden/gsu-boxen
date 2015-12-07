@@ -1,5 +1,10 @@
 class people::dfwarden {
 
+  # Default to my user when reading/writing OSX defaults
+  Boxen::Osx_defaults {
+    user => $::boxen_user,
+  }
+
   # Variables used in this manifest
   $home            = "/Users/${::boxen_user}"
   $library         = "${home}/Library"
@@ -8,6 +13,9 @@ class people::dfwarden {
   $dotfiles        = "${code}/dotfiles"
   $ohmyzsh         = "${code}/oh-my-zsh"
   $powerline_fonts = "${code}/powerline-fonts"
+
+  $brew_pkgs = ['tmux', 'zsh-completions']
+  $brewcask_pkgs = ['adium', 'alfred', 'bettertouchtool', 'caffeine', 'dash', 'dropbox', 'firefox', 'flux', 'google-chrome', 'karabiner', 'seil', 'yujitach-menumeters']
 
   # OSX settings - https://github.com/boxen/puppet-osx
   include osx::global::enable_keyboard_control_access
@@ -55,15 +63,16 @@ class people::dfwarden {
   }
   include iterm2::colors::solarized_light
   include iterm2::colors::solarized_dark
+  # TODO: Decide if it's better to symlink or have defaults point straight at dotfiles.
   boxen::osx_defaults { 'iterm2 prefs folder define':
-    domain => 'com.googlecode.iterm2',
-    key    => 'PrefsCustomFolder',
-    value  => "${home}/.iterm2",
+    domain      => 'com.googlecode.iterm2',
+    key         => 'PrefsCustomFolder',
+    value       => "${home}/.iterm2",
   }
   boxen::osx_defaults { 'iterm2 prefs folder enable':
-    domain => 'com.googlecode.iterm2',
-    key    => 'LoadPrefsFromCustomFolder',
-    value  => '1',
+    domain      => 'com.googlecode.iterm2',
+    key         => 'LoadPrefsFromCustomFolder',
+    value       => true,
   }
   file { 'iterm2 prefs symlink':
     path   => "${home}/.iterm2",
@@ -71,20 +80,12 @@ class people::dfwarden {
     target => "${dotfiles}/iterm2",
   }
 
-  $brewcask_pkgs = ['adium', 'alfred', 'caffeine', 'dash', 'dropbox', 'firefox', 'flux', 'google-chrome', 'karabiner', 'seil', 'yujitach-menumeters']
   # Some of these need sudo cached to work.
   # Just run sudo ls before scripts/boxen.
   package { $brewcask_pkgs:
     provider => 'brewcask'
   }
-
-  # Install packages from homebrew
-  $brew_pkgs = ['tmux']
   package { $brew_pkgs: }
-
-  class { 'dropbox':
-    version => $::dropbox_version,
-  }
 
   file { [$dotfiles, $ohmyzsh, $boxendev, $powerline_fonts]:
     ensure    => directory
@@ -123,7 +124,7 @@ class people::dfwarden {
   file { 'zshrc':
     path   => "${home}/.zshrc",
     ensure => 'link',
-    target => "${ohmyzsh}/templates/zshrc.${::boxen_user}",
+    target => "${dotfiles}/zsh/zshrc",
   }
   osx_chsh { $::boxen_user:
     shell => '/bin/zsh',
@@ -176,5 +177,41 @@ class people::dfwarden {
     value    => 'David Warden'
   }
 
+  # Karabiner settings
+  # TODO: refactor https://github.com/boxen/puppet-karabiner to work with
+  # brew cask Karabiner but retain the XML and CLI functionality...
+  file { 'karabiner private.xml':
+    path   => "${library}/Application Support/Karabiner/private.xml",
+    ensure => 'file',
+    source => "${dotfiles}/karabiner/private.xml",
+    notify => Exec['karabiner settings refresh'],
+  }
+  exec { 'karabiner settings refresh':
+    path        => "${dotfiles}/karabiner/set_options.sh",
+    refreshonly => true,
+  }
+
+  # BetterTouchTool settings
+  # TODO: Refactor https://github.com/boxen/puppet-boxen/blob/master/manifests/osx_defaults.pp to support complex types.
+  $btt_profile = "${::boxen_user}_profile"
+  $btt_presets = "<array><dict><key>fileName</key><string>bttdata2</string><key>presetName</key><string>Default</string></dict><dict><key>fileName</key><string>${btt_profile}</string><key>presetName</key><string>${btt_profile}</string></dict></array>"
+  file { 'btt custom preset':
+    path   => "${library}/Application Support/BetterTouchTool/${btt_profile}",
+    ensure => 'file',
+    source => "${dotfiles}/bettertouchtool/profile",
+    notify => [ Boxen::Osx_defaults['btt presets append settings'], Boxen::Osx_defaults['btt select custom preset'] ],
+  }
+  boxen::osx_defaults { 'btt presets append settings':
+    domain      => 'com.hegenberg.BetterTouchTool',
+    key         => 'presets',
+    value       => $btt_presets,
+    refreshonly => true,
+  }
+  boxen::osx_defaults { 'btt select custom preset':
+    domain => 'com.hegenberg.BetterTouchTool',
+    key    => 'currentStore',
+    value  => "$btt_profile",
+    refreshonly => true,
+  }
 
 }
