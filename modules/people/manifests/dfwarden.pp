@@ -16,8 +16,16 @@ class people::dfwarden {
   $ohmyzsh         = "${code}/oh-my-zsh"
   $powerline_fonts = "${code}/powerline-fonts"
 
-  $brew_pkgs = ['tmux', 'zsh-completions', 'findutils', 'ack', 'gnu-tar', 'nmap', 'jq', 'httpie']
+  $brew_pkgs = ['tmux', 'zsh-completions', 'findutils', 'ack', 'gnu-tar', 'nmap', 'jq', 'httpie', 'vim']
   $brewcask_pkgs = ['adium', 'alfred', 'bettertouchtool', 'caffeine', 'dash', 'dropbox', 'firefox', 'flux', 'google-chrome', 'karabiner', 'seil', 'yujitach-menumeters']
+
+  # Some of these need sudo cached to work.
+  # Just run sudo ls before scripts/boxen.
+  package { $brewcask_pkgs:
+    provider => 'brewcask'
+  }
+  package { $brew_pkgs: }
+
 
   # OSX settings - https://github.com/boxen/puppet-osx
   include osx::global::enable_keyboard_control_access
@@ -82,13 +90,6 @@ class people::dfwarden {
     target => "${dotfiles}/iterm2",
   }
 
-  # Some of these need sudo cached to work.
-  # Just run sudo ls before scripts/boxen.
-  package { $brewcask_pkgs:
-    provider => 'brewcask'
-  }
-  package { $brew_pkgs: }
-
   file { [$dotfiles, $ohmyzsh, $boxendev, $powerline_fonts]:
     ensure    => directory
   }
@@ -133,18 +134,22 @@ class people::dfwarden {
   }
 
 
-  # Deploy .vimrc as file so we can refresh plugins
+  # Vim settings and plugins
+  $vimrc_dotfile = "${dotfiles}/vim/vimrc"
+  file { $vimrc_dotfile:
+      audit => 'content',
+  }
   file { 'dotfile vimrc':
     ensure  => 'link',
     path    => "${home}/.vimrc",
-    target  => "${dotfiles}/vim/vimrc",
+    target  => $vimrc_dotfile,
     require => Repository[$dotfiles],
-    notify  => Exec['install vim plugins'],
   }
   exec { 'install vim plugins':
     command     => '/usr/bin/vim +PluginInstall +qall',
     refreshonly => true,
     require     => Repository["${home}/.vim/bundle/Vundle.vim"],
+    subscribe   => File[$vimrc_dotfile],
   }
   $vimdirs = [ "${home}/.vim", "${home}/.vim/bundle"]
   file { $vimdirs:
@@ -152,7 +157,7 @@ class people::dfwarden {
     before => Repository["${home}/.vim/bundle/Vundle.vim"]
   }
   repository { "${home}/.vim/bundle/Vundle.vim":
-    source     => 'VundleVim/Vundle.vim',
+    source => 'VundleVim/Vundle.vim',
   }
 
 
@@ -182,38 +187,47 @@ class people::dfwarden {
   # Karabiner settings
   # TODO: refactor https://github.com/boxen/puppet-karabiner to work with
   # brew cask Karabiner but retain the XML and CLI functionality...
+  $karabiner_private_dotfile = "${dotfiles}/karabiner/private.xml"
+  file { $karabiner_private_dotfile:
+      audit => 'content',
+  }
   file { 'karabiner private.xml':
-    ensure => 'file',
+    ensure => 'link',
     path   => "${library}/Application Support/Karabiner/private.xml",
-    source => "${dotfiles}/karabiner/private.xml",
-    notify => Exec['karabiner settings refresh'],
+    target => $karabiner_private_dotfile,
   }
   exec { 'karabiner settings refresh':
     path        => "${dotfiles}/karabiner/set_options.sh",
     refreshonly => true,
+    subscribe   => File[$karabiner_private_dotfile],
   }
 
   # BetterTouchTool settings
   # TODO: Refactor https://github.com/boxen/puppet-boxen/blob/master/manifests/osx_defaults.pp to support complex types.
   $btt_profile = "${::boxen_user}_profile"
   $btt_presets = "<array><dict><key>fileName</key><string>bttdata2</string><key>presetName</key><string>Default</string></dict><dict><key>fileName</key><string>${btt_profile}</string><key>presetName</key><string>${btt_profile}</string></dict></array>"
+  $btt_dotfile = "${dotfiles}/bettertouchtool/profile"
+  file { $btt_dotfile:
+      audit => 'content',
+  }
   file { 'btt custom preset':
     ensure => 'link',
     path   => "${library}/Application Support/BetterTouchTool/${btt_profile}",
-    target => "${dotfiles}/bettertouchtool/profile",
-    notify => [ Boxen::Osx_defaults['btt presets append settings'], Boxen::Osx_defaults['btt select custom preset'] ],
+    target => $btt_dotfile,
   }
   boxen::osx_defaults { 'btt presets append settings':
     domain      => 'com.hegenberg.BetterTouchTool',
     key         => 'presets',
     value       => $btt_presets,
     refreshonly => true,
+    subscribe   => File[$btt_dotfile],
   }
   boxen::osx_defaults { 'btt select custom preset':
     domain      => 'com.hegenberg.BetterTouchTool',
     key         => 'currentStore',
     value       => $btt_profile,
     refreshonly => true,
+    subscribe   => File[$btt_dotfile],
   }
 
 }
