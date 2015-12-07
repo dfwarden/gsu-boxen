@@ -229,5 +229,10 @@ class people::dfwarden {
     refreshonly => true,
     subscribe   => File[$btt_dotfile],
   }
+  boxen::osx_defaults { 'btt enable window snapping':
+    domain      => 'com.hegenberg.BetterTouchTool',
+    key         => 'windowSnappingEnabled',
+    value       => true,
+  }
 
 }
