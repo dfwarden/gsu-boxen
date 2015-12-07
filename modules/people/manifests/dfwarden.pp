@@ -196,9 +196,9 @@ class people::dfwarden {
   $btt_profile = "${::boxen_user}_profile"
   $btt_presets = "<array><dict><key>fileName</key><string>bttdata2</string><key>presetName</key><string>Default</string></dict><dict><key>fileName</key><string>${btt_profile}</string><key>presetName</key><string>${btt_profile}</string></dict></array>"
   file { 'btt custom preset':
-    path   => "${library}/Application Support/BetterTouchTool/${btt_profile}",
-    ensure => 'file',
-    source => "${dotfiles}/bettertouchtool/profile",
+    path => "${library}/Application Support/BetterTouchTool/${btt_profile}",
+    ensure => 'link',
+    target => "${dotfiles}/bettertouchtool/profile",
     notify => [ Boxen::Osx_defaults['btt presets append settings'], Boxen::Osx_defaults['btt select custom preset'] ],
   }
   boxen::osx_defaults { 'btt presets append settings':
