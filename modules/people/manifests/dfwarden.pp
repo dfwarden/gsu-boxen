@@ -16,7 +16,7 @@ class people::dfwarden {
   $ohmyzsh         = "${code}/oh-my-zsh"
   $powerline_fonts = "${code}/powerline-fonts"
 
-  $brew_pkgs = ['tmux', 'zsh-completions']
+  $brew_pkgs = ['tmux', 'zsh-completions', 'findutils', 'ack', 'gnu-tar', 'nmap', 'jq', 'httpie']
   $brewcask_pkgs = ['adium', 'alfred', 'bettertouchtool', 'caffeine', 'dash', 'dropbox', 'firefox', 'flux', 'google-chrome', 'karabiner', 'seil', 'yujitach-menumeters']
 
   # OSX settings - https://github.com/boxen/puppet-osx
