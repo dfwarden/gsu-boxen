@@ -1,3 +1,5 @@
+# Dave's personal configs.
+
 class people::dfwarden {
 
   # Default to my user when reading/writing OSX defaults
@@ -75,8 +77,8 @@ class people::dfwarden {
     value       => true,
   }
   file { 'iterm2 prefs symlink':
-    path   => "${home}/.iterm2",
     ensure => 'link',
+    path   => "${home}/.iterm2",
     target => "${dotfiles}/iterm2",
   }
 
@@ -114,16 +116,16 @@ class people::dfwarden {
 
 
   file { 'menumeters config':
-    path   => "${library}/Preferences/com.ragingmenace.MenuMeters.plist",
     ensure => 'link',
+    path   => "${library}/Preferences/com.ragingmenace.MenuMeters.plist",
     target => "${dotfiles}/menumeters/com.ragingmenace.MenuMeters.plist",
   }
 
 
   # Set up Oh-My-Zsh and ZSH
   file { 'zshrc':
-    path   => "${home}/.zshrc",
     ensure => 'link',
+    path   => "${home}/.zshrc",
     target => "${dotfiles}/zsh/zshrc",
   }
   osx_chsh { $::boxen_user:
@@ -133,16 +135,16 @@ class people::dfwarden {
 
   # Deploy .vimrc as file so we can refresh plugins
   file { 'dotfile vimrc':
+    ensure  => 'link',
     path    => "${home}/.vimrc",
-    ensure  => 'file',
-    source  => "${dotfiles}/vim/vimrc",
+    target  => "${dotfiles}/vim/vimrc",
     require => Repository[$dotfiles],
     notify  => Exec['install vim plugins'],
   }
   exec { 'install vim plugins':
-    command     => "/usr/bin/vim +PluginInstall +qall",
+    command     => '/usr/bin/vim +PluginInstall +qall',
     refreshonly => true,
-    require      => Repository["${home}/.vim/bundle/Vundle.vim"],
+    require     => Repository["${home}/.vim/bundle/Vundle.vim"],
   }
   $vimdirs = [ "${home}/.vim", "${home}/.vim/bundle"]
   file { $vimdirs:
@@ -181,8 +183,8 @@ class people::dfwarden {
   # TODO: refactor https://github.com/boxen/puppet-karabiner to work with
   # brew cask Karabiner but retain the XML and CLI functionality...
   file { 'karabiner private.xml':
-    path   => "${library}/Application Support/Karabiner/private.xml",
     ensure => 'file',
+    path   => "${library}/Application Support/Karabiner/private.xml",
     source => "${dotfiles}/karabiner/private.xml",
     notify => Exec['karabiner settings refresh'],
   }
@@ -196,8 +198,8 @@ class people::dfwarden {
   $btt_profile = "${::boxen_user}_profile"
   $btt_presets = "<array><dict><key>fileName</key><string>bttdata2</string><key>presetName</key><string>Default</string></dict><dict><key>fileName</key><string>${btt_profile}</string><key>presetName</key><string>${btt_profile}</string></dict></array>"
   file { 'btt custom preset':
-    path => "${library}/Application Support/BetterTouchTool/${btt_profile}",
     ensure => 'link',
+    path   => "${library}/Application Support/BetterTouchTool/${btt_profile}",
     target => "${dotfiles}/bettertouchtool/profile",
     notify => [ Boxen::Osx_defaults['btt presets append settings'], Boxen::Osx_defaults['btt select custom preset'] ],
   }
@@ -208,9 +210,9 @@ class people::dfwarden {
     refreshonly => true,
   }
   boxen::osx_defaults { 'btt select custom preset':
-    domain => 'com.hegenberg.BetterTouchTool',
-    key    => 'currentStore',
-    value  => "$btt_profile",
+    domain      => 'com.hegenberg.BetterTouchTool',
+    key         => 'currentStore',
+    value       => $btt_profile,
     refreshonly => true,
   }
 
