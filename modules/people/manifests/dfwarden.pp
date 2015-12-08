@@ -236,4 +236,11 @@ class people::dfwarden {
     value       => true,
   }
 
+  # Firefox Vimperator Plugin
+  file { 'vimperator local config':
+    ensure => 'link',
+    path   => "${home}/.vimperatorrc.local",
+    target => "${dotfiles}/vimperator/vimperatorrc.local",
+  }
+
 }
