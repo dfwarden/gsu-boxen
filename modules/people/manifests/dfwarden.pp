@@ -2,6 +2,8 @@
 
 class people::dfwarden {
 
+  # TODO: Get and configure Microsoft Remote Deskto
+
   # Default to my user when reading/writing OSX defaults
   Boxen::Osx_defaults {
     user => $::boxen_user,
@@ -16,7 +18,7 @@ class people::dfwarden {
   $ohmyzsh         = "${code}/oh-my-zsh"
   $powerline_fonts = "${code}/powerline-fonts"
 
-  $brew_pkgs = ['tmux', 'zsh-completions', 'findutils', 'ack', 'gnu-tar', 'nmap', 'jq', 'httpie', 'vim']
+  $brew_pkgs = ['tmux', 'zsh-completions', 'findutils', 'ack', 'gnu-tar', 'nmap', 'jq', 'httpie', 'vim', 'ssh-copy-id']
   $brewcask_pkgs = ['adium', 'alfred', 'bettertouchtool', 'caffeine', 'dash', 'dropbox', 'firefox', 'flux', 'google-chrome', 'karabiner', 'seil', 'yujitach-menumeters']
 
   # Some of these need sudo cached to work.
@@ -73,7 +75,6 @@ class people::dfwarden {
   }
   include iterm2::colors::solarized_light
   include iterm2::colors::solarized_dark
-  # TODO: Decide if it's better to symlink or have defaults point straight at dotfiles.
   boxen::osx_defaults { 'iterm2 prefs folder define':
     domain      => 'com.googlecode.iterm2',
     key         => 'PrefsCustomFolder',
