@@ -3,6 +3,9 @@
 class people::dfwarden {
 
   # TODO: Get and configure Microsoft Remote Deskto
+  # Connections are stored in /Users/$USER/Library/Containers/com.microsoft.rdc.mac/Data/Library/Preferences/com.microsoft.rdc.mac.plist
+  # and can be read with defaults read com.microsoft.rdc.mac
+  # but they are in a god-awful format.
 
   # Default to my user when reading/writing OSX defaults
   Boxen::Osx_defaults {
