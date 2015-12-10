@@ -136,6 +136,11 @@ class people::dfwarden {
   osx_chsh { $::boxen_user:
     shell => '/bin/zsh',
   }
+  file { 'oh-my-zsh custom themes link':
+    ensure => 'link',
+    path   => "${ohmyzsh}/custom/themes",
+    target => "${dotfiles}/zsh/themes",
+  }
 
 
   # Vim settings and plugins
@@ -186,6 +191,18 @@ class people::dfwarden {
   }
   git::config::global { 'user.name':
     value    => 'David Warden'
+  }
+  # From http://willi.am/blog/2015/02/27/dynamically-configure-your-git-email/,
+  # dynamically set email address when cloning a new repo.
+  file { 'git-scripts link':
+    ensure => 'link',
+    path   => "${home}/.git-scripts",
+    target => "${dotfiles}/git/scripts",
+  }
+  file { 'git post-checkout default hook':
+    ensure => 'link',
+    path   => '/usr/local/share/git-core/templates/hooks/post-checkout',
+    target => "${dotfiles}/git/hooks/post-checkout",
   }
 
   # Karabiner settings
