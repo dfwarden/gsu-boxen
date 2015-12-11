@@ -231,10 +231,15 @@ class people::dfwarden {
   file { $btt_dotfile:
       audit => 'content',
   }
+  file { 'btt support dir':
+    ensure => 'directory',
+    path    => "${library}/Application Support/BetterTouchTool",
+  }
   file { 'btt custom preset':
-    ensure => 'link',
-    path   => "${library}/Application Support/BetterTouchTool/${btt_profile}",
-    target => $btt_dotfile,
+    ensure  => 'link',
+    path    => "${library}/Application Support/BetterTouchTool/${btt_profile}",
+    target  => $btt_dotfile,
+    require => File['btt support dir'],
   }
   boxen::osx_defaults { 'btt presets append settings':
     domain      => 'com.hegenberg.BetterTouchTool',
