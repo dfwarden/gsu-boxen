@@ -33,6 +33,7 @@ class people::dfwarden {
 
 
   # OSX settings - https://github.com/boxen/puppet-osx
+  # TODO: Reverse scroll direction
   include osx::global::enable_keyboard_control_access
 
   include osx::global::expand_print_dialog
@@ -194,6 +195,9 @@ class people::dfwarden {
   }
   # From http://willi.am/blog/2015/02/27/dynamically-configure-your-git-email/,
   # dynamically set email address when cloning a new repo.
+  git::config::global { 'alias.email-guess':
+    value => '!. ~/.git-scripts/email-guess.sh'
+  }
   file { 'git-scripts link':
     ensure => 'link',
     path   => "${home}/.git-scripts",
@@ -213,9 +217,10 @@ class people::dfwarden {
       audit => 'content',
   }
   file { 'karabiner private.xml':
-    ensure => 'link',
-    path   => "${library}/Application Support/Karabiner/private.xml",
-    target => $karabiner_private_dotfile,
+    ensure  => 'link',
+    path    => "${library}/Application Support/Karabiner/private.xml",
+    target  => $karabiner_private_dotfile,
+    require => Package['karabiner'],
   }
   exec { 'karabiner settings refresh':
     path        => "${dotfiles}/karabiner/set_options.sh",
@@ -232,7 +237,7 @@ class people::dfwarden {
       audit => 'content',
   }
   file { 'btt support dir':
-    ensure => 'directory',
+    ensure  => 'directory',
     path    => "${library}/Application Support/BetterTouchTool",
   }
   file { 'btt custom preset':
